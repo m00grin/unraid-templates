@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<CommunityApplications>
+  <Profile>
+Unraid templates for [ph-intercept](https://github.com/m00grin/ph-intercept), a real-time DNS dashboard for Pi-hole, AdGuard Home, and Technitium DNS where blocked queries get shot down by an interceptor ship.
+
+For help, bug reports, and feature requests, open an issue on the [ph-intercept GitHub repository](https://github.com/m00grin/ph-intercept/issues).
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/m00grin/unraid-templates/main/images/ph-intercept.png</Icon>
+  <WebPage>https://github.com/m00grin/ph-intercept</WebPage>
+</CommunityApplications>

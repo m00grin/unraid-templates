@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>ph-intercept</Name>
+  <Repository>m00grin/ph-intercept:latest</Repository>
+  <Registry>https://hub.docker.com/r/m00grin/ph-intercept</Registry>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/m00grin/ph-intercept/issues</Support>
+  <Project>https://github.com/m00grin/ph-intercept</Project>
+  <ReadMe>https://github.com/m00grin/ph-intercept#readme</ReadMe>
+  <Overview>Real-time DNS dashboard for Pi-hole v6, AdGuard Home, and Technitium DNS. Every query becomes a ship on screen: allowed queries fly past as friendlies, and blocked ones get shot down by an interceptor. The HUD shows live stats and lets you pause blocking with a timer.
+
+Setup: pick your PROVIDER, then fill in the URL and credentials for that provider only. Leave the other providers' fields blank.
+- Pi-hole: API URL like http://192.168.1.x:80/api and an app password (Pi-hole Settings, Web interface / API, Configure app password).
+- AdGuard Home: control URL like http://192.168.1.x:3000/control plus username and password.
+- Technitium: web console URL like http://192.168.1.x:5380 plus an API token. Install the Query Logs (Sqlite) app in Technitium so ships spawn.
+
+Optional settings (backgrounds, ignored domains, 2-player split screen with a second DNS server) are under Show more settings.</Overview>
+  <Category>Network:DNS Network:Other</Category>
+  <WebUI>http://[IP]:[PORT:4653]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/m00grin/unraid-templates/main/templates/ph-intercept.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/m00grin/unraid-templates/main/images/ph-intercept.png</Icon>
+  <ExtraParams>--cap-drop=ALL --security-opt=no-new-privileges --memory=128m --pids-limit=20</ExtraParams>
+  <PostArgs/>
+  <Requires>A Pi-hole v6, AdGuard Home, or Technitium DNS server the container can reach over the network.</Requires>
+  <ExtraSearchTerms>pihole pi-hole adguard technitium dns dashboard ad blocker visualizer</ExtraSearchTerms>
+  <License>MIT</License>
+  <Changes>### 2026-11-14
+- Initial template (ph-intercept 1.5.6)</Changes>
+  <Config Name="Web UI port" Target="4653" Default="4653" Mode="tcp" Description="Port for the dashboard. Change it if 4653 is already in use on your server." Type="Port" Display="always" Required="true" Mask="false">4653</Config>
+  <Config Name="DNS provider" Target="PROVIDER" Default="pihole|adguard|technitium" Mode="" Description="Which DNS server to watch. Fill in only that provider's fields below." Type="Variable" Display="always" Required="true" Mask="false">pihole</Config>
+  <Config Name="Pi-hole: API URL" Target="PIHOLE_URL" Default="" Mode="" Description="Pi-hole v6 API base URL, e.g. http://192.168.1.x:80/api (v5 is not supported)." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Pi-hole: app password" Target="PIHOLE_PASSWORD" Default="" Mode="" Description="Pi-hole app password, from Settings, Web interface / API, Configure app password." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="AdGuard Home: control URL" Target="ADGUARD_URL" Default="" Mode="" Description="AdGuard Home control API base URL, e.g. http://192.168.1.x:3000/control" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="AdGuard Home: username" Target="ADGUARD_USERNAME" Default="" Mode="" Description="AdGuard Home username or email address." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="AdGuard Home: password" Target="ADGUARD_PASSWORD" Default="" Mode="" Description="AdGuard Home password." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Technitium: console URL" Target="TECHNITIUM_URL" Default="" Mode="" Description="Technitium web console address, e.g. http://192.168.1.x:5380" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Technitium: API token" Target="TECHNITIUM_TOKEN" Default="" Mode="" Description="Permanent API token from the Technitium console (recommended). Or leave blank and use the username and password under Show more settings." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Technitium: username" Target="TECHNITIUM_USER" Default="" Mode="" Description="Console username, only if you are not using an API token." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Technitium: password" Target="TECHNITIUM_PASSWORD" Default="" Mode="" Description="Console password, only if you are not using an API token." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+  <Config Name="Technitium: 2FA code" Target="TECHNITIUM_TOTP" Default="" Mode="" Description="Only if the console account has 2FA enabled. Not needed with an API token." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+  <Config Name="Technitium: query log app" Target="TECHNITIUM_QUERY_LOG_APP" Default="Query Logs (Sqlite)" Mode="" Description="Installed name of the Technitium query-log app. Change only if you renamed it." Type="Variable" Display="advanced" Required="false" Mask="false">Query Logs (Sqlite)</Config>
+  <Config Name="Technitium: query log class" Target="TECHNITIUM_QUERY_LOG_CLASS" Default="QueryLogsSqlite.App" Mode="" Description="Class path of the Technitium query-log app. Change only if you renamed it." Type="Variable" Display="advanced" Required="false" Mask="false">QueryLogsSqlite.App</Config>
+  <Config Name="Default background" Target="BG_MODE" Default="starfield|nebula|outrun|dark" Mode="" Description="Starting background. Viewers can switch it live in the app." Type="Variable" Display="advanced" Required="false" Mask="false">starfield</Config>
+  <Config Name="Sky region" Target="SKY_PRESET" Default="summer_triangle|orion|scorpius|southern_cross" Mode="" Description="Constellations shown in the starfield background." Type="Variable" Display="advanced" Required="false" Mask="false">summer_triangle</Config>
+  <Config Name="Custom background image" Target="BG_IMAGE" Default="" Mode="" Description="Image URL, or /bg/your-file.jpg for a file in the backgrounds folder below. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Backgrounds folder" Target="/app/static/bg" Default="/mnt/user/appdata/ph-intercept/bg" Mode="ro" Description="Folder for custom background images, used with the Custom background image setting." Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/ph-intercept/bg</Config>
+  <Config Name="ESC return URL" Target="RETURN_URL" Default="" Mode="" Description="Where pressing ESC takes you, e.g. your homelab dashboard. Leave blank to disable ESC." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Pi-hole: verify SSL" Target="PIHOLE_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if Pi-hole uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="AdGuard Home: verify SSL" Target="ADGUARD_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if AdGuard Home uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Technitium: verify SSL" Target="TECHNITIUM_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if Technitium uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Pi-hole: ignored domains" Target="PIHOLE_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="AdGuard Home: ignored domains" Target="ADGUARD_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Technitium: ignored domains" Target="TECHNITIUM_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="2-player: second Pi-hole URL" Target="PIHOLE2_URL" Default="" Mode="" Description="Second Pi-hole v6 API URL for split-screen 2-player mode. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="2-player: second Pi-hole password" Target="PIHOLE2_PASSWORD" Default="" Mode="" Description="App password for the second Pi-hole, if it has one." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+  <Config Name="2-player: second AdGuard URL" Target="ADGUARD2_URL" Default="" Mode="" Description="Second AdGuard Home control URL for split-screen 2-player mode. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="2-player: second AdGuard username" Target="ADGUARD2_USERNAME" Default="" Mode="" Description="Username for the second AdGuard Home." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="2-player: second AdGuard password" Target="ADGUARD2_PASSWORD" Default="" Mode="" Description="Password for the second AdGuard Home." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+  <Config Name="2-player: second Technitium URL" Target="TECHNITIUM2_URL" Default="" Mode="" Description="Second Technitium console URL for split-screen 2-player mode. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="2-player: second Technitium token" Target="TECHNITIUM2_TOKEN" Default="" Mode="" Description="API token for the second Technitium server." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+</Container>
