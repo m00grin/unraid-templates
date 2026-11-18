@@ -16,7 +16,7 @@ Setup: pick your PROVIDER, then fill in the URL and credentials for that provide
 - AdGuard Home: control URL like http://192.168.1.x:3000/control plus username and password.
 - Technitium: web console URL like http://192.168.1.x:5380 plus an API token. Install the Query Logs (Sqlite) app in Technitium so ships spawn.
 
-Optional settings (backgrounds, ignored domains, 2-player split screen with a second DNS server) are under Show more settings.</Overview>
+Optional settings (backgrounds, ignored domains and clients, view-only and privacy options for shared screens, 2-player split screen with a second DNS server) are under Show more settings.</Overview>
   <Category>Network:DNS Network:Other</Category>
   <WebUI>http://[IP]:[PORT:4653]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/m00grin/unraid-templates/main/templates/ph-intercept.xml</TemplateURL>
@@ -26,7 +26,10 @@ Optional settings (backgrounds, ignored domains, 2-player split screen with a se
   <Requires>A Pi-hole v6, AdGuard Home, or Technitium DNS server the container can reach over the network.</Requires>
   <ExtraSearchTerms>pihole pi-hole adguard technitium dns dashboard ad blocker visualizer</ExtraSearchTerms>
   <License>MIT</License>
-  <Changes>### 2026-11-14
+  <Changes>### 2026-11-18
+- Add view-only mode, hide client names, hide domains, and ignored clients (ph-intercept 1.5.7)
+
+### 2026-11-14
 - Initial template (ph-intercept 1.5.6)</Changes>
   <Config Name="Web UI port" Target="4653" Default="4653" Mode="tcp" Description="Port for the dashboard. Change it if 4653 is already in use on your server." Type="Port" Display="always" Required="true" Mask="false">4653</Config>
   <Config Name="DNS provider" Target="PROVIDER" Default="pihole|adguard|technitium" Mode="" Description="Which DNS server to watch. Fill in only that provider's fields below." Type="Variable" Display="always" Required="true" Mask="false">pihole</Config>
@@ -47,12 +50,18 @@ Optional settings (backgrounds, ignored domains, 2-player split screen with a se
   <Config Name="Custom background image" Target="BG_IMAGE" Default="" Mode="" Description="Image URL, or /bg/your-file.jpg for a file in the backgrounds folder below. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="Backgrounds folder" Target="/app/static/bg" Default="/mnt/user/appdata/ph-intercept/bg" Mode="ro" Description="Folder for custom background images, used with the Custom background image setting." Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/ph-intercept/bg</Config>
   <Config Name="ESC return URL" Target="RETURN_URL" Default="" Mode="" Description="Where pressing ESC takes you, e.g. your homelab dashboard. Leave blank to disable ESC." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="View-only mode" Target="READ_ONLY" Default="false|true" Mode="" Description="Set to true for a wall display or a page others can open: the server refuses the blocking toggle, filter updates, and 2-player mode changes, and the HUD leaves those controls inert. Stats stay visible." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Hide client names" Target="HIDE_CLIENT" Default="false|true" Mode="" Description="Set to true to drop the client name or IP from every query before it reaches the browser. The in-app CLIENT toggle is hidden." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Hide domains" Target="HIDE_DOMAIN" Default="false|true" Mode="" Description="Set to true to replace every domain with an opaque token before it reaches the browser (new random key at each start). Repeat queries still group; domain labels and the DOMAIN toggle are left out." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
   <Config Name="Pi-hole: verify SSL" Target="PIHOLE_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if Pi-hole uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="AdGuard Home: verify SSL" Target="ADGUARD_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if AdGuard Home uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="Technitium: verify SSL" Target="TECHNITIUM_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if Technitium uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="Pi-hole: ignored domains" Target="PIHOLE_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Pi-hole: ignored clients" Target="PIHOLE_IGNORE_CLIENTS" Default="" Mode="" Description="Comma-separated regex patterns matched against the client name and IP; queries from matching clients spawn no ships. Example: ^uptime-kuma$,^10\.0\.0\.5$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="AdGuard Home: ignored domains" Target="ADGUARD_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="AdGuard Home: ignored clients" Target="ADGUARD_IGNORE_CLIENTS" Default="" Mode="" Description="Comma-separated regex patterns matched against the client name and IP; queries from matching clients spawn no ships. Example: ^uptime-kuma$,^10\.0\.0\.5$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="Technitium: ignored domains" Target="TECHNITIUM_IGNORE_DOMAINS" Default="" Mode="" Description="Comma-separated regex patterns; matching domains spawn no ships. Example: .*\.local$,.*\.internal$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Technitium: ignored clients" Target="TECHNITIUM_IGNORE_CLIENTS" Default="" Mode="" Description="Comma-separated regex patterns matched against the client IP (Technitium logs no client name); queries from matching clients spawn no ships. Example: ^192\.168\.1\.99$" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="2-player: second Pi-hole URL" Target="PIHOLE2_URL" Default="" Mode="" Description="Second Pi-hole v6 API URL for split-screen 2-player mode. Leave blank to disable." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="2-player: second Pi-hole password" Target="PIHOLE2_PASSWORD" Default="" Mode="" Description="App password for the second Pi-hole, if it has one." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
   <Config Name="2-player: second Pi-hole verify SSL" Target="PIHOLE2_VERIFY_SSL" Default="true|false" Mode="" Description="Set to false if the second Pi-hole uses HTTPS with a self-signed certificate." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
